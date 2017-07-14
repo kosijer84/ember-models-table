@@ -1446,7 +1446,7 @@ export default Component.extend({
             myElement = document.getElementsByClassName('mobile-slide');
 
         /* disable click on table because click is like swipe */
-        $(myElement).click(false);
+        // $(myElement).click(false);
 
         for (let i = 0; i < myElement.length; i++) {
             var mc = new Hammer(myElement[i]);
