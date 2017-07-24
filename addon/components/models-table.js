@@ -1368,40 +1368,38 @@ export default Component.extend({
 
             myElement = document.getElementsByClassName('mobile-slide');
 
-        let clicked = $(myElement).click(false);
-        console.log('clicked:', clicked);
-        if (clicked) {
-            for (let i = 0; i < myElement.length; i++) {
-                var mc = new Hammer(myElement[i]);
+        // $(myElement).click(false);
 
-                //enable all directions
-                mc.get('swipe').set({
-                    direction: Hammer.DIRECTION_HORIZONTAL,
-                    pointers: 1,
-                    threshold: 10,
-                    velocity: 0.3
-                });
+        for (let i = 0; i < myElement.length; i++) {
+            var mc = new Hammer(myElement[i]);
 
-                mc.on("swipeleft", function (ev) {
+            //enable all directions
+            mc.get('swipe').set({
+                direction: Hammer.DIRECTION_HORIZONTAL,
+                pointers: 1,
+                threshold: 10,
+                velocity: 0.3
+            });
 
-                    self.swipeTable('slideNextRow');
+            mc.on("swipeleft", function (ev) {
+
+                self.swipeTable('slideNextRow');
 
 
-                    return false;
+                return false;
 
-                });
-                mc.on("swiperight", function (ev) {
+            });
+            mc.on("swiperight", function (ev) {
 
-                    console.log('ev: ', ev.type);
+                console.log('ev: ', ev.type);
 
-                    self.swipeTable('slidePreviousRow');
+                self.swipeTable('slidePreviousRow');
 
-                    return false;
-                });
-            }
-
-            this.set('counter', 0);
+                return false;
+            });
         }
+
+        this.set('counter', 0);
     },
 
     //
