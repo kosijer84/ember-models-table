@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import generateContent from '../../utils/c';
 
-const {A, on, getOwner, set, Logger} = Ember;
+const {A, on, getOwner, set} = Ember;
 
 export default Ember.Controller.extend({
 
@@ -30,7 +30,7 @@ export default Ember.Controller.extend({
 
   actions: {
     displayDataChanged(settings) {
-      Logger.log(settings.selectedItems);
+      console.log(settings.selectedItems);
     }
   },
 

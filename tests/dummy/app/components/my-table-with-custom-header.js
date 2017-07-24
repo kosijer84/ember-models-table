@@ -16,6 +16,7 @@ export default ModelsTable.extend({
         set(this, '_selectedItems', A(data.slice()));
       }
       this.userInteractionObserver();
+
     }
   }
 

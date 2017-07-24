@@ -20,7 +20,7 @@
             {{partial column.templateForSortCell}}
           {{else}}
             {{#if column.componentForSortCell}}
-              {{component column.componentForSortCell data=data column=column row=record table=this}}
+              {{component column.componentName data=data column=column record=record}}
             {{else}}
               {{column.title}}
             {{/if}}

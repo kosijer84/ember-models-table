@@ -1,0 +1,60 @@
+@import 'ember-paper';
+
+/* Style for mobile/tablet devices - responsive tables*/
+@media only screen and (max-width: 767px) {
+  /* Force table to not be like tables anymore */
+  .inner-table-wrapper {
+    overflow: hidden;
+  }
+  #mobile-view-table tr {
+    display: table;
+  }
+  #mobile-view-table table,
+  #mobile-view-table thead,
+  #mobile-view-table tbody,
+  #mobile-view-table th,
+  #mobile-view-table td {
+    display: inline-flex;
+    width: 100%;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  #mobile-view-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  #mobile-view-table tr {
+    width: 100%;
+    border: 1px solid transparent;
+  }
+
+  #mobile-view-table td {
+    /* Behave like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    white-space: normal;
+    text-align:left;
+  }
+
+  .mobile-view {
+    position: relative;
+    float: left;
+    text-align: right;
+    width: 55%;
+    padding-right: 10%;
+  }
+  .table-footer {
+    display: none;
+  }
+  .btn-sm {
+    text-transform: uppercase;
+  }
+  /* remove thead in table when search data in table */
+  thead {
+    display: none!important;
+  }
+}
+

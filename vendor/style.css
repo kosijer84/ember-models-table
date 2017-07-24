@@ -1,21 +1,4 @@
-.models-table-wrapper .clearFilterIcon {
-  pointer-events: auto;
-  cursor: pointer;
-}
-.models-table-wrapper select ~ .clearFilterIcon {
-  margin-right: 9px;
-}
-
-.models-table-wrapper .globalSearch {
-  position: relative;
-}
-
-.models-table-clear {
-  clear: both;
-}
-
-/* Style for mobile/tablet devices - responsive tables*/
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 768px) {
   /* Force table to not be like tables anymore */
   .inner-table-wrapper {
     overflow: hidden;
@@ -40,7 +23,6 @@
   }
 
   #mobile-view-table tr {
-    width: 100%;
     border: 1px solid transparent;
   }
 
@@ -60,14 +42,5 @@
     width: 55%;
     padding-right: 10%;
   }
-  .table-nav {
-    display: none;
-  }
-  .btn-sm {
-    text-transform: uppercase;
-  }
-  /* remove thead in table when search data in table */
-  thead {
-    display: none!important;
-  }
 }
+

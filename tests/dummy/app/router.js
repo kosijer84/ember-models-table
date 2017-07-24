@@ -6,7 +6,7 @@ const Router = Ember.Router.extend({
   rootURL: config.rootURL
 });
 
-Router.map(function() {
+export default Router.map(function() {
   this.route('perf');
   this.route('examples', function () {
     this.route('common-table');
@@ -27,7 +27,6 @@ Router.map(function() {
     this.route('expandable-rows');
     this.route('display-data-changed-action');
     this.route('select-rows-with-checkboxes');
-    this.route('column-sets');
   });
 
   this.route('users', function() {

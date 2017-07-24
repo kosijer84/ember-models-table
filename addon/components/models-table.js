@@ -1,10 +1,10 @@
 import Ember from 'ember';
 import fmt from '../utils/fmt';
 import assignPoly from '../utils/assign-poly';
-import betterCompare from '../utils/better-compare';
 
 import layout from '../templates/components/models-table';
 import ModelsTableColumn from '../-private/column';
+
 
 /**
  * @typedef {object} groupedHeader
@@ -26,7 +26,6 @@ const {
     computed,
     observer,
     isNone,
-    isBlank,
     A,
     on,
     compare,
@@ -58,8 +57,8 @@ const defaultMessages = {
 };
 
 const defaultIcons = {
-    'sort-asc': 'glyphicon glyphicon-triangle-top',
-    'sort-desc': 'glyphicon glyphicon-triangle-bottom',
+    'sort-asc': 'glyphicon glyphicon-triangle-bottom',
+    'sort-desc': 'glyphicon glyphicon-triangle-top',
     'column-visible': 'glyphicon glyphicon-check',
     'column-hidden': 'glyphicon glyphicon-unchecked',
     'nav-first': 'glyphicon glyphicon-chevron-left',
@@ -107,7 +106,8 @@ const defaultCssClasses = {
     input: 'form-control',
     clearFilterIcon: 'glyphicon glyphicon-remove-sign form-control-feedback',
     clearAllFiltersIcon: 'glyphicon glyphicon-remove-circle',
-    globalFilterDropdownWrapper: ''
+    globalFilterDropdownWrapper: '',
+    mobileHiddenViewRows: 'show-hide-mobile-view'
 };
 
 function isSortedByDefault(column) {
@@ -151,12 +151,11 @@ function getFilterOptionsCP(propertyName) {
         let predefinedFilterOptions = get(this, 'predefinedFilterOptions');
         let filterWithSelect = get(this, 'filterWithSelect');
         if (filterWithSelect && 'array' !== typeOf(predefinedFilterOptions)) {
-            let _data = A(A(data).compact());
-            let options = A(_data.mapBy(propertyName)).compact();
+            let options = A(data.mapBy(propertyName)).compact();
             if (get(this, 'sortFilterOptions')) {
                 options = options.sort();
             }
-            return A(['', ...options]).uniq().map(optionStrToObj);
+            return A([''].concat(options)).uniq().map(optionStrToObj);
         }
         return [];
     });
@@ -201,9 +200,7 @@ export default Component.extend({
      * @name ModelsTable#sortProperties
      * @default []
      */
-    sortProperties: computed(function () {
-        return A([]);
-    }),
+    sortProperties: A([]),
 
     /**
      * Determines if multi-columns sorting should be used
@@ -313,9 +310,7 @@ export default Component.extend({
      * @name ModelsTable#columnFieldsToCheckUpdate
      * @default ['propertyName', 'template']
      */
-    columnFieldsToCheckUpdate: computed(function () {
-        return A(['propertyName', 'template']);
-    }),
+    columnFieldsToCheckUpdate: A(['propertyName', 'template']),
 
     /**
      * All table records
@@ -324,9 +319,7 @@ export default Component.extend({
      * @name ModelsTable#data
      * @default []
      */
-    data: computed(function () {
-        return A([]);
-    }),
+    data: A([]),
 
     /**
      * Table columns
@@ -335,53 +328,32 @@ export default Component.extend({
      * @name ModelsTable#columns
      * @default []
      */
-    columns: computed(function () {
-        return A([]);
-    }),
-
-    /**
-     * Sets of columns that can be toggled together.
-     *
-     * @type {Object[]}
-     * @name ModelsTable#columnSets
-     * @default []
-     */
-    columnSets: computed(function () {
-        return A([]);
-    }),
+    columns: A([]),
 
     /**
      * @type {Ember.Object[]}
      * @name ModelsTable#processedColumns
      * @default []
      */
-    processedColumns: computed(function () {
-        return A([]);
-    }),
+    processedColumns: A([]),
 
     /**
      * @type {Object}
      * @name ModelsTable#messages
      */
-    messages: computed(function () {
-        return O.create({});
-    }),
+    messages: O.create({}),
 
     /**
      * @type {Object}
      * @name ModelsTable#classes
      */
-    classes: computed(function () {
-        return O.create({});
-    }),
+    classes: O.create({}),
 
     /**
      * @type {Object}
      * @name ModelsTable#icons
      */
-    icons: computed(function () {
-        return O.create({});
-    }),
+    icons: O.create({}),
 
     /**
      * List of the additional headers
@@ -390,9 +362,7 @@ export default Component.extend({
      * @type {groupedHeader[][]}
      * @name ModelsTable#groupedHeaders
      */
-    groupedHeaders: computed(function () {
-        return A([]);
-    }),
+    groupedHeaders: A([]),
 
     /**
      * Template with First|Prev|Next|Last buttons
@@ -666,17 +636,6 @@ export default Component.extend({
     }),
 
     /**
-     * True if all processedColumns dosn't use filtering and sorting
-     *
-     * @type {boolean}
-     * @name ModelsTable#noHeaderFilteringAndSorting
-     */
-    noHeaderFilteringAndSorting: computed('processedColumns.@each.useFilter', 'processedColumns.@each.useSorting', function () {
-        const processedColumns = get(this, 'processedColumns');
-        return processedColumns.isEvery('useFilter', false) && processedColumns.isEvery('useSorting', false);
-    }),
-
-    /**
      * Number of pages
      *
      * @type {number}
@@ -698,6 +657,7 @@ export default Component.extend({
      * @type {visiblePageNumber[]}
      * @name ModelsTable#visiblePageNumbers
      */
+
     visiblePageNumbers: computed('arrangedContentLength', 'pagesCount', 'currentPageNumber', function () {
         const {
             pagesCount,
@@ -813,8 +773,8 @@ export default Component.extend({
                             return true;
                         }
                         if (filteringIgnoreCase) {
-                            cellValue = typeOf(cellValue) === 'string' ? cellValue.toLowerCase() : cellValue;
-                            filterString = typeOf(filterString) === 'string' ? filterString.toLowerCase() : filterString;
+                            cellValue = cellValue.toLowerCase();
+                            filterString = filterString.toLowerCase();
                         }
                         return 'function' === typeOf(c.filterFunction) ? c.filterFunction(cellValue, filterString, row) : 0 === compare(cellValue, filterString);
                     }
@@ -842,7 +802,7 @@ export default Component.extend({
         return sortProperties.length ? A(_filteredContent.sort((row1, row2) => {
             for (let i = 0; i < sortProperties.length; i++) {
                 let [prop, direction] = sortProperties[i];
-                let result = betterCompare(get(row1, prop), get(row2, prop));
+                let result = compare(get(row1, prop), get(row2, prop));
                 if (result !== 0) {
                     return (direction === 'desc') ? (-1 * result) : result;
                 }
@@ -859,6 +819,7 @@ export default Component.extend({
      * @name ModelsTable#visibleContent
      */
     visibleContent: computed('arrangedContent.[]', 'pageSize', 'currentPageNumber', function () {
+
         let {
             arrangedContent,
             pageSize,
@@ -942,9 +903,7 @@ export default Component.extend({
      * @default [10, 25, 50]
      * @name ModelsTable#pageSizeValues
      */
-    pageSizeValues: computed(function () {
-        return A([10, 25, 50]);
-    }),
+    pageSizeValues: A([10, 25, 50]),
 
     /**
      * List of options for pageSize-selectBox
@@ -955,25 +914,7 @@ export default Component.extend({
      * @default []
      * @private
      */
-    pageSizeOptions: computed(function () {
-        return A([]);
-    }),
-
-    /**
-     * These are options for the columns dropdown.
-     * By default, the "Show All", 'Hide All" and "Restore Defaults" buttons are displayed.
-     *
-     * @type {{ showAll: boolean, hideAll: boolean, restoreDefaults: boolean, columnSets: object[] }}
-     * @private
-     */
-    columnDropdownOptions: computed('columnSets.{label,showColumns,hideOtherColumns}', function () {
-        return O.create({
-            showAll: true,
-            hideAll: true,
-            restoreDefaults: true,
-            columnSets: A(get(this, 'columnSets') || [])
-        });
-    }),
+    pageSizeOptions: A([]),
 
     /**
      * Show first page if for some reasons there is no content for current page, but table data exists
@@ -1142,7 +1083,7 @@ export default Component.extend({
             if (get(c, 'filterWithSelect') && get(c, 'useFilter')) {
                 let predefinedFilterOptions = get(column, 'predefinedFilterOptions');
                 let usePredefinedFilterOptions = 'array' === typeOf(predefinedFilterOptions);
-                if (usePredefinedFilterOptions && get(predefinedFilterOptions, 'length')) {
+                if (usePredefinedFilterOptions) {
                     const types = A(['object', 'instance']);
                     const allObjects = A(predefinedFilterOptions).every(option => types.includes(typeOf(option)) && option.hasOwnProperty('label') && option.hasOwnProperty('value'));
                     const allPrimitives = A(predefinedFilterOptions).every(option => !types.includes(typeOf(option)));
@@ -1151,13 +1092,9 @@ export default Component.extend({
                         predefinedFilterOptions = predefinedFilterOptions.map(optionStrToObj);
                     }
                     if ('' !== predefinedFilterOptions[0].value) {
-                        predefinedFilterOptions = [{value: '', label: ''}, ...predefinedFilterOptions];
+                        predefinedFilterOptions = [{value: '', label: ''}].concat(predefinedFilterOptions);
                     }
                     set(c, 'filterOptions', usePredefinedFilterOptions ? predefinedFilterOptions : []);
-                }
-                else if (usePredefinedFilterOptions) {
-                    // Empty array as predefined filter
-                    set(c, 'useFilter', false);
                 }
                 else {
                     if (propertyName) {
@@ -1232,6 +1169,7 @@ export default Component.extend({
         assign(newClasses, defaultCssClasses, customClasses);
         set(this, 'classes', O.create(newClasses));
     },
+
 
     /**
      * Provide backward compatibility with <code>pageSizeValues</code> equal to an array with numbers and not objects
@@ -1322,7 +1260,7 @@ export default Component.extend({
                 columnFilters: {}
             });
             columns.forEach(column => {
-                if (!isBlank(get(column, 'filterString'))) {
+                if (get(column, 'filterString')) {
                     settings.columnFilters[get(column, 'propertyName')] = get(column, 'filterString');
                 }
             });
@@ -1393,33 +1331,11 @@ export default Component.extend({
         set(this, '_expandedRowIndexes', A([]));
     }),
 
-    /**
-     * Rebuild the whole table.
-     * This can be called to force a complete re-render of the table.
-     *
-     * @method rebuildTable
-     * @private
-     */
-    rebuildTable() {
-        set(this, 'currentPageNumber', 1);
-        this._clearFilters();
-        this.setup();
-    },
-
-    /**
-     * Clear all filters.
-     *
-     * @method _clearFilters
-     * @private
-     */
-    _clearFilters() {
-        set(this, 'filterString', '');
-        get(this, 'processedColumns').setEach('filterString', '');
-    },
-
     didRender() {
-        this.initializeHammerjs()
+
+        this.initializeHammerjs();
     },
+
 
     /**
      * call actions on swipe slider
@@ -1439,6 +1355,13 @@ export default Component.extend({
         }
     },
 
+    /**
+     * Call hammer.js / choose options for slider
+     *
+     * @method collapseRow
+     * @name ModelsTable#collapseRow
+     * @private
+     */
     initializeHammerjs(){
 
         let self = this,
@@ -1446,22 +1369,19 @@ export default Component.extend({
             myElement = document.getElementsByClassName('mobile-slide');
 
         /* disable click on table because click is like swipe */
-        // $(myElement).click(false);
+        $(myElement).click(false);
 
         for (let i = 0; i < myElement.length; i++) {
             var mc = new Hammer(myElement[i]);
 
             //enable all directions
-            // mc.get('swipe').set({
-            //     direction: Hammer.DIRECTION_HORIZONTAL,
-            //     pointers: 1,
-            //     threshold: 10,
-            //     velocity: 0.3
-            // });
-
-            mc.on("swipeleft swiperight tap press", function(ev) {
-
+            mc.get('swipe').set({
+                direction: Hammer.DIRECTION_HORIZONTAL,
+                pointers: 1,
+                threshold: 10,
+                velocity: 0.3
             });
+            mc.get('tap').set({ enable: false });
 
             mc.on("swipeleft", function (ev) {
 
@@ -1486,6 +1406,14 @@ export default Component.extend({
         this.set('counter', 0);
     },
 
+    //
+    sliderCounter(){
+        let beforeBoxes = this.get('counter');
+        console.log('beforeBoxes', beforeBoxes);
+
+        this.set('counter', 0)
+    },
+
     actions: {
 
         sendAction () {
@@ -1508,7 +1436,7 @@ export default Component.extend({
         },
 
         hideAllColumns () {
-            A(get(this, 'processedColumns').filterBy('mayBeHidden')).setEach('isHidden', true);
+            get(this, 'processedColumns').setEach('isHidden', true);
             this._sendColumnsVisibilityChangedAction();
         },
 
@@ -1517,61 +1445,6 @@ export default Component.extend({
                 set(c, 'isHidden', !get(c, 'defaultVisible'));
                 this._sendColumnsVisibilityChangedAction();
             });
-        },
-
-        toggleColumnSet({showColumns = [], hideOtherColumns, toggleSet = false} = {}) {
-            let columns = get(this, 'processedColumns');
-
-            // If hideOtherColumns is not set, default to true if toggleSet=false, else to false
-            hideOtherColumns = isNone(hideOtherColumns) ? !toggleSet : hideOtherColumns;
-
-            // If showColumns is a function, call it
-            if (typeOf(showColumns) === 'function') {
-                return run(this, showColumns, columns);
-            }
-
-            let setColumns = A([]);
-            let otherColumns = A([]);
-
-            columns.forEach((column) => {
-                let columnId = get(column, 'propertyName');
-
-                if (!columnId || !get(column, 'mayBeHidden')) {
-                    return;
-                }
-
-                showColumns = A(showColumns);
-                if (showColumns.includes(columnId)) {
-                    setColumns.pushObject(column);
-                } else {
-                    otherColumns.pushObject(column);
-                }
-            });
-
-            // By default, all columns should always be set to visible
-            // However, if `toggleSet=true`, then the set should be toggled between visible/hidden
-            // In this case, if one of the set columns is hidden, make them all visible, else hide them
-            let targetVisibility = true;
-            if (toggleSet) {
-                targetVisibility = !!setColumns.findBy('isVisible', false);
-            }
-
-            setColumns.forEach((column) => {
-                let columnId = get(column, 'propertyName');
-                if (showColumns.includes(columnId) && get(column, 'isVisible') !== targetVisibility) {
-                    this.send('toggleHidden', column);
-                }
-            });
-
-            if (hideOtherColumns) {
-                otherColumns.forEach((column) => {
-                    let columnId = get(column, 'propertyName');
-
-                    if (!showColumns.includes(columnId) && get(column, 'isVisible')) {
-                        this.send('toggleHidden', column);
-                    }
-                });
-            }
         },
 
         gotoFirst () {
@@ -1603,23 +1476,6 @@ export default Component.extend({
                 this.incrementProperty('currentPageNumber');
                 this.userInteractionObserver();
             }
-            let tableBorderWidth = 2;
-            let beforeBoxes = this.get('counter');
-            let boxesLength = $('.mobile-slide').length;
-
-            beforeBoxes = ++beforeBoxes % boxesLength;
-            console.log('ova se poziva');
-            this.set('counter', beforeBoxes);
-            console.log('beforeBoxes', beforeBoxes);
-
-            if (beforeBoxes < 0) {
-                beforeBoxes = boxesLength - 1;
-            }
-
-            let currentView = $('.mobile-slide').eq(beforeBoxes).width();
-
-            let left = (currentView + tableBorderWidth) * beforeBoxes;
-            $('.inner-table-wrapper').stop().animate({scrollLeft: left});
         },
 
         gotoLast () {
@@ -1741,7 +1597,8 @@ export default Component.extend({
          * Clear all column filters and global filter
          */
         clearFilters() {
-            this._clearFilters();
+            set(this, 'filterString', '');
+            get(this, 'processedColumns').setEach('filterString', '');
         },
 
         /**
@@ -1764,6 +1621,7 @@ export default Component.extend({
                 set(this, '_selectedItems', A(data.slice()));
             }
             this.userInteractionObserver();
+
         },
 
         /**
@@ -1784,6 +1642,13 @@ export default Component.extend({
                 beforeBoxes = boxesLength - 1;
             }
 
+            // Show/hide previous button depends is it disable or enabled
+            // if (beforeBoxes >= 1) {
+            //     $("#right").removeClass('js-showHidePreviousBtn');
+            // } else {
+            //     $("#right").addClass('js-showHidePreviousBtn');
+            // }
+
             let currentView = $('.mobile-slide').eq(beforeBoxes).width();
 
             let left = (currentView + tableBorderWidth) * beforeBoxes;
@@ -1803,6 +1668,11 @@ export default Component.extend({
             beforeBoxes = beforeBoxes > 0 ? --beforeBoxes % boxesLength : boxesLength - 1;
 
             this.set('counter', beforeBoxes);
+
+            // remove button if it's first slide
+            // if (beforeBoxes === 0) {
+            //     $("#right").removeClass('js-showHidePreviousBtn');
+            // }
 
             let currentView = $('.mobile-slide').eq(Math.abs(beforeBoxes)).width();
 

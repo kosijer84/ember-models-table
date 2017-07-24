@@ -13,7 +13,7 @@ export default Ember.Route.extend({
       if (!segment) {
         return false;
       }
-      var rName = segment.value;
+      var rName = segment.string;
       return rName === thisName && k !== rName && k.indexOf('loading') === -1 && k.indexOf('error') === -1 && k.indexOf('index') === -1;
     });
     routes = routes.map(r => {
