@@ -1368,42 +1368,40 @@ export default Component.extend({
 
             myElement = document.getElementsByClassName('mobile-slide');
 
-        /* disable click on table because click is like swipe */
-        $(myElement).click(false);
+        let clicked = $(myElement).click(false);
+        console.log('clicked:', clicked);
+        if (clicked) {
+            for (let i = 0; i < myElement.length; i++) {
+                var mc = new Hammer(myElement[i]);
 
-        for (let i = 0; i < myElement.length; i++) {
-            var mc = new Hammer(myElement[i]);
+                //enable all directions
+                mc.get('swipe').set({
+                    direction: Hammer.DIRECTION_HORIZONTAL,
+                    pointers: 1,
+                    threshold: 10,
+                    velocity: 0.3
+                });
 
-            //enable all directions
-            mc.get('swipe').set({
-                direction: Hammer.DIRECTION_HORIZONTAL,
-                pointers: 1,
-                threshold: 10,
-                velocity: 0.3
-            });
-            mc.get('tap').set({ enable: false });
+                mc.on("swipeleft", function (ev) {
 
-            mc.on("swipeleft", function (ev) {
-
-                console.log('ev: ', ev.type);
-
-                self.swipeTable('slideNextRow');
+                    self.swipeTable('slideNextRow');
 
 
-                return false;
+                    return false;
 
-            });
-            mc.on("swiperight", function (ev) {
+                });
+                mc.on("swiperight", function (ev) {
 
-                console.log('ev: ', ev.type);
+                    console.log('ev: ', ev.type);
 
-                self.swipeTable('slidePreviousRow');
+                    self.swipeTable('slidePreviousRow');
 
-                return false;
-            });
+                    return false;
+                });
+            }
+
+            this.set('counter', 0);
         }
-
-        this.set('counter', 0);
     },
 
     //
@@ -1634,9 +1632,7 @@ export default Component.extend({
             let boxesLength = $('.mobile-slide').length;
 
             beforeBoxes = ++beforeBoxes % boxesLength;
-            console.log('ova se poziva');
             this.set('counter', beforeBoxes);
-            console.log('beforeBoxes', beforeBoxes);
 
             if (beforeBoxes < 0) {
                 beforeBoxes = boxesLength - 1;
