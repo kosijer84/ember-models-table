@@ -1331,10 +1331,10 @@ export default Component.extend({
         set(this, '_expandedRowIndexes', A([]));
     }),
 
-    didRender() {
-
-        this.initializeHammerjs();
-    },
+    // didRender() {
+    //
+    //     this.initializeHammerjs();
+    // },
 
 
     /**
