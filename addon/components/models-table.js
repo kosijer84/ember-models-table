@@ -110,6 +110,7 @@ const defaultCssClasses = {
     mobileHiddenViewRows: 'show-hide-mobile-view'
 };
 
+
 function isSortedByDefault(column) {
     return column.sortPrecedence > NOT_SORTED;
 }
@@ -1331,10 +1332,9 @@ export default Component.extend({
         set(this, '_expandedRowIndexes', A([]));
     }),
 
-    // didRender() {
-    //
-    //     this.initializeHammerjs();
-    // },
+    didRender() {
+        this.initializeHammerjs();
+    },
 
 
     /**
@@ -1363,12 +1363,16 @@ export default Component.extend({
      * @private
      */
     initializeHammerjs(){
+        let slideCounter = this.get('slideCounter') ? this.get('slideCounter') : 0;
+        this.set('slideCounter', slideCounter);
 
         let self = this,
-
             myElement = document.getElementsByClassName('mobile-slide');
 
-        // $(myElement).click(false);
+        $(myElement).click(function(){
+            let slideCounter = self.get('slideCounter');
+            console.log('slideCounter on click: ', slideCounter);
+        });
 
         for (let i = 0; i < myElement.length; i++) {
             var mc = new Hammer(myElement[i]);
@@ -1380,8 +1384,11 @@ export default Component.extend({
                 threshold: 10,
                 velocity: 0.3
             });
-
+            let next = 0;
             mc.on("swipeleft", function (ev) {
+                if(slideCounter !== next)
+                    return;
+                next = slideCounter;
 
                 self.swipeTable('slideNextRow');
 
@@ -1389,26 +1396,25 @@ export default Component.extend({
                 return false;
 
             });
+            let prev = 0;
             mc.on("swiperight", function (ev) {
-
-                console.log('ev: ', ev.type);
-
+                if(slideCounter !== prev)
+                    return;
+                prev = slideCounter;
                 self.swipeTable('slidePreviousRow');
 
                 return false;
             });
         }
-
-        this.set('counter', 0);
     },
 
     //
-    sliderCounter(){
-        let beforeBoxes = this.get('counter');
-        console.log('beforeBoxes', beforeBoxes);
-
-        this.set('counter', 0)
-    },
+    // sliderCounter(){
+    //     let beforeBoxes = this.get('slideCounter');
+    //     console.log('beforeBoxes', beforeBoxes);
+    //
+    //     this.set('slideCounter', 0)
+    // },
 
     actions: {
 
@@ -1626,12 +1632,13 @@ export default Component.extend({
         slideNextRow() {
 
             let tableBorderWidth = 2;
-            let beforeBoxes = this.get('counter');
+            let beforeBoxes = this.get('slideCounter');
             let boxesLength = $('.mobile-slide').length;
 
             beforeBoxes = ++beforeBoxes % boxesLength;
-            this.set('counter', beforeBoxes);
+            this.set('slideCounter', beforeBoxes);
 
+            console.log('slide next row: ', beforeBoxes);
             if (beforeBoxes < 0) {
                 beforeBoxes = boxesLength - 1;
             }
@@ -1656,12 +1663,12 @@ export default Component.extend({
         slidePreviousRow() {
 
             let tableBorderWidth = 2;
-            let beforeBoxes = this.get('counter');
+            let beforeBoxes = this.get('slideCounter');
             let boxesLength = $('.mobile-slide').length;
 
             beforeBoxes = beforeBoxes > 0 ? --beforeBoxes % boxesLength : boxesLength - 1;
-
-            this.set('counter', beforeBoxes);
+            console.log('slide prev row: ', beforeBoxes);
+            this.set('slideCounter', beforeBoxes);
 
             // remove button if it's first slide
             // if (beforeBoxes === 0) {
