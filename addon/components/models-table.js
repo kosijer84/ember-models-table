@@ -1365,7 +1365,7 @@ export default Component.extend({
     initializeHammerjs(){
         let slideCounter = this.get('slideCounter') ? this.get('slideCounter') : 0;
         this.set('slideCounter', slideCounter);
-
+        console.log('poziva se funkcija', slideCounter);
         let self = this,
             myElement = document.getElementsByClassName('mobile-slide');
 
@@ -1386,6 +1386,7 @@ export default Component.extend({
             });
             let next = 0;
             mc.on("swipeleft", function (ev) {
+                console.log('left');
                 if(slideCounter !== next)
                     return;
                 next = slideCounter;
@@ -1398,6 +1399,7 @@ export default Component.extend({
             });
             let prev = 0;
             mc.on("swiperight", function (ev) {
+                console.log('desno');
                 if(slideCounter !== prev)
                     return;
                 prev = slideCounter;
