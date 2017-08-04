@@ -1408,13 +1408,13 @@ export default Component.extend({
         }
     },
 
-    //
-    // sliderCounter(){
-    //     let beforeBoxes = this.get('slideCounter');
-    //     console.log('beforeBoxes', beforeBoxes);
-    //
-    //     this.set('slideCounter', 0)
-    // },
+
+    slideCounter(){
+        let beforeBoxes = this.get('slideCounter');
+        console.log('beforeBoxes', beforeBoxes);
+
+        this.set('slideCounter', 0)
+    },
 
     actions: {
 
