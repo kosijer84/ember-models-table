@@ -35,6 +35,14 @@
     text-align:left;
   }
 
+  .hide-mobile-view tr {
+    position: relative;
+    float: left;
+    text-align: right;
+    width: 55%;
+    padding-right: 10%;
+  }
+
   .mobile-view {
     position: relative;
     float: left;

@@ -1,4 +1,4 @@
-<tr class="mobile-slide mobile-test{{if (exists-in _selectedItems record) "selected-row "}}"
+<tr class="mobile-slide{{if (exists-in _selectedItems record) "selected-row "}}"
     {{action "clickOnRow" index record on="click" preventDefault=false}}>
     {{#each processedColumns as |column|}}
         {{#if column.isVisible}}
