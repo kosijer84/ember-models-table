@@ -39,22 +39,20 @@
     text-align:left;
   }
 
-  .mobile-view {
+  .hide-mobile-view tr {
     position: relative;
     float: left;
     text-align: right;
     width: 55%;
     padding-right: 10%;
   }
-  .table-footer {
-    display: none;
-  }
-  .btn-sm {
-    text-transform: uppercase;
-  }
-  /* remove thead in table when search data in table */
-  thead {
-    display: none!important;
+
+  .mobile-view {
+    position: relative;
+    float: left;
+    text-align: right;
+    width: 55%;
+    padding-right: 10%;
   }
 }
 
