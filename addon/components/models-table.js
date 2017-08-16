@@ -1367,7 +1367,7 @@ export default Component.extend({
         this.set('slideCounter', slideCounter);
         console.log('poziva se funkcija', slideCounter);
         let self = this,
-            myElement = document.getElementsByClassName('hide-mobile-view');
+            myElement = document.getElementsByClassName('hide-mobile-view').children('tr');
 
         $(myElement).click(function(){
             let slideCounter = self.get('slideCounter');
