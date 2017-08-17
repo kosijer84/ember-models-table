@@ -1,54 +1,60 @@
-/*
-Error: File to import not found or unreadable: ember-paper.
-        on line 1 of app.scss
+@import 'ember-paper';
 
-1: @import 'ember-paper';
-2: 
-3: /* Style for mobile/tablet devices - responsive tables*\/
-4: @media only screen and (max-width: 767px) {
-5:   /* Force table to not be like tables anymore *\/
-6:   .inner-table-wrapper {
+/* Style for mobile/tablet devices - responsive tables*/
+@media only screen and (max-width: 767px) {
+  /* Force table to not be like tables anymore */
+  .inner-table-wrapper {
+    overflow: hidden;
+  }
+  #mobile-view-table tr {
+    display: table;
+  }
+  #mobile-view-table table,
+  #mobile-view-table thead,
+  #mobile-view-table tbody,
+  #mobile-view-table th,
+  #mobile-view-table td {
+    display: inline-flex;
+    width: 100%;
+  }
 
-Backtrace:
-app.scss:1
-/usr/lib/ruby/vendor_ruby/sass/tree/import_node.rb:67:in `rescue in import'
-/usr/lib/ruby/vendor_ruby/sass/tree/import_node.rb:45:in `import'
-/usr/lib/ruby/vendor_ruby/sass/tree/import_node.rb:28:in `imported_file'
-/usr/lib/ruby/vendor_ruby/sass/tree/import_node.rb:37:in `css_import?'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:313:in `visit_import'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
-/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:160:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `map'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:169:in `block in visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:181:in `with_environment'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:168:in `visit_children'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `block in visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:188:in `visit_root'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:159:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:8:in `visit'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:36:in `css_tree'
-/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:381:in `_render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/engine.rb:298:in `render_with_sourcemap'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:492:in `update_stylesheet'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `each'
-/usr/lib/ruby/vendor_ruby/sass/plugin/compiler.rb:209:in `update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/plugin.rb:82:in `update_stylesheets'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:336:in `watch_or_update'
-/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:51:in `process_result'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:52:in `parse'
-/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:19:in `parse!'
-/usr/bin/scss:8:in `<main>'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: File to import not found or unreadable: ember-paper.\A         on line 1 of app.scss\A \A 1: @import 'ember-paper';\A 2: \A 3: /* Style for mobile/tablet devices - responsive tables*/\A 4: @media only screen and (max-width: 767px) {\A 5:   /* Force table to not be like tables anymore */\A 6:   .inner-table-wrapper {"; }
+  /* Hide table headers (but not display: none;, for accessibility) */
+  #mobile-view-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  #mobile-view-table tr {
+    width: 100%;
+    border: 1px solid transparent;
+  }
+
+  #mobile-view-table td {
+    /* Behave like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    white-space: normal;
+    text-align:left;
+  }
+
+  .mobile-view {
+    position: relative;
+    float: left;
+    text-align: right;
+    width: 55%;
+    padding-right: 10%;
+  }
+  .table-footer {
+    display: none;
+  }
+  .btn-sm {
+    text-transform: uppercase;
+  }
+  /* remove thead in table when search data in table */
+  thead {
+    display: none!important;
+  }
+}
+
