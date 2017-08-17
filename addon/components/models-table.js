@@ -1367,7 +1367,7 @@ export default Component.extend({
         this.set('slideCounter', slideCounter);
         console.log('poziva se funkcija', slideCounter);
         let self = this,
-            myElement = $('.hide-mobile-view > tr');
+            myElement = document.getElementsByClassName('mobile-slide');
 
         $(myElement).click(function(){
             let slideCounter = self.get('slideCounter');
@@ -1409,14 +1409,6 @@ export default Component.extend({
             });
         }
     },
-
-
-    // slideCounter(){
-    //     let beforeBoxes = this.get('slideCounter');
-    //     console.log('beforeBoxes', beforeBoxes);
-    //
-    //     this.set('slideCounter', 0)
-    // },
 
     actions: {
 
@@ -1633,14 +1625,12 @@ export default Component.extend({
          */
         slideNextRow() {
 
-            let tableBorderWidth = 2;
             let beforeBoxes = this.get('slideCounter');
-            let boxesLength = $('.hide-mobile-view').children('tr').length;
+            let boxesLength = $('.mobile-slide').length;
 
             beforeBoxes = ++beforeBoxes % boxesLength;
             this.set('slideCounter', beforeBoxes);
-
-            console.log('slide next row: ', beforeBoxes);
+            
             if (beforeBoxes < 0) {
                 beforeBoxes = boxesLength - 1;
             }
@@ -1652,9 +1642,11 @@ export default Component.extend({
             //     $("#right").addClass('js-showHidePreviousBtn');
             // }
 
-            let currentView = $('.hide-mobile-view').children('tr').eq(beforeBoxes).width();
+            let currentView = $('.mobile-slide').eq(beforeBoxes).outerWidth();
+            console.log('currentView: ', currentView);
 
-            let left = (currentView + tableBorderWidth) * beforeBoxes;
+
+            let left = currentView * beforeBoxes;
             $('.inner-table-wrapper').stop().animate({scrollLeft: left});
 
         },
@@ -1664,9 +1656,8 @@ export default Component.extend({
          */
         slidePreviousRow() {
 
-            let tableBorderWidth = 2;
             let beforeBoxes = this.get('slideCounter');
-            let boxesLength = $('.hide-mobile-view').children('tr').length;
+            let boxesLength = $('.mobile-slide').length;
 
             beforeBoxes = beforeBoxes > 0 ? --beforeBoxes % boxesLength : boxesLength - 1;
             console.log('slide prev row: ', beforeBoxes);
@@ -1677,9 +1668,9 @@ export default Component.extend({
             //     $("#right").removeClass('js-showHidePreviousBtn');
             // }
 
-            let currentView = $('.hide-mobile-view').children('tr').eq(Math.abs(beforeBoxes)).width();
+            let currentView = $('.mobile-slide').eq(Math.abs(beforeBoxes)).outerWidth();
 
-            let right = (currentView + tableBorderWidth) * Math.abs(beforeBoxes);
+            let right = currentView * Math.abs(beforeBoxes);
 
             $('.inner-table-wrapper').stop().animate({scrollLeft: right});
         }
