@@ -1391,7 +1391,7 @@ export default Component.extend({
                     return;
                 next = slideCounter;
 
-                self.swipeTable('slideNextRow');
+                self.swipeTable('slidePreviousRow');
 
 
                 return false;
@@ -1403,7 +1403,7 @@ export default Component.extend({
                 if(slideCounter !== prev)
                     return;
                 prev = slideCounter;
-                self.swipeTable('slidePreviousRow');
+                self.swipeTable('slideNextRow');
 
                 return false;
             });
