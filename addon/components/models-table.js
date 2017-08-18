@@ -1374,10 +1374,6 @@ export default Component.extend({
             console.log('slideCounter on click: ', slideCounter);
         });
 
-        $('#tables').attr('id', function(i) {
-            return 'table'+(i+1);
-        });
-
         for (let i = 0; i < myElement.length; i++) {
             var mc = new Hammer(myElement[i]);
 
@@ -1630,6 +1626,7 @@ export default Component.extend({
         slideNextRow() {
 
             let beforeBoxes = this.get('slideCounter');
+            console.log('counter: ', beforeBoxes);
             let boxesLength = $('.mobile-slide').length;
 
             beforeBoxes = ++beforeBoxes % boxesLength;
